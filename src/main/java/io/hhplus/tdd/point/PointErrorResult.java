@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PointErrorResult {
-	USER_POINT_IS_NOT_ENOUGH("User point is not enough."),
+	USER_POINT_IS_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "User point is not enough."),
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User does not exist."),
 	;
 
+	private final HttpStatus status;
 	private final String message;
 
 }

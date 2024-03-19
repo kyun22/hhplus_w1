@@ -72,4 +72,36 @@ public class PointServiceTest {
 		assertThat(used.point()).isEqualTo(800L);
 	}
 
+	@DisplayName("유저 포인트 충전 시 히스토리도 저장 됨.")
+	@Test
+	void insertHistoryWhenUseUserPoint(){
+		userPointTable.insertOrUpdate(1L, 10000L);
+		pointService.use(1L, 1000L);
+		pointService.use(1L, 1000L);
+
+		// then
+		List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(1L);
+		assertThat(pointHistories.size()).isEqualTo(2);
+	}
+
+	@DisplayName("포인트 조회 성공")
+	@Test
+	void selectUserPointSuccess(){
+		UserPoint userPoint = pointService.getUserPoint(1L);
+
+		assertThat(userPoint.id()).isEqualTo(1L);
+		assertThat(userPoint.point()).isEqualTo(0);
+	}
+
+	@DisplayName("포인트 히스토리 조회 성공")
+	@Test
+	void selectPointHistorySuccess(){
+		pointService.charge(1L, 1000);
+		pointService.charge(1L, 1000);
+		List<PointHistory> history = pointService.getPointHistory(1L);
+		assertThat(history.size()).isEqualTo(2);
+	}
+
+
+
 }

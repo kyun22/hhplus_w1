@@ -1,5 +1,7 @@
 package io.hhplus.tdd.point;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import io.hhplus.tdd.database.PointHistoryTable;
@@ -37,7 +39,16 @@ public class PointService {
 		return pointHistoryTable.insert(id, amount, use, System.currentTimeMillis());
 	}
 
-	private UserPoint getUserPoint(long id) {
+	public UserPoint getUserPoint(long id) {
 		return userPointTable.selectById(id);
+	}
+
+	public List<PointHistory> getPointHistory(long id) {
+
+		List<PointHistory> histories = pointHistoryTable.selectAllByUserId(id);
+		if(histories.isEmpty())
+			throw new PointException(PointErrorResult.USER_NOT_FOUND);
+
+		return histories;
 	}
 }
