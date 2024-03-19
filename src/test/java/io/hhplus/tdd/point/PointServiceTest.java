@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.dto.PointHistoryListResponse;
+import io.hhplus.tdd.dto.UserPointResponse;
 
 public class PointServiceTest {
 
@@ -87,10 +89,10 @@ public class PointServiceTest {
 	@DisplayName("포인트 조회 성공")
 	@Test
 	void selectUserPointSuccess(){
-		UserPoint userPoint = pointService.getUserPoint(1L);
+		UserPointResponse response = pointService.getUserPoint(1L);
 
-		assertThat(userPoint.id()).isEqualTo(1L);
-		assertThat(userPoint.point()).isEqualTo(0);
+		assertThat(response.getId()).isEqualTo(1L);
+		assertThat(response.getPoint()).isEqualTo(0);
 	}
 
 	@DisplayName("포인트 히스토리 조회 성공")
@@ -98,7 +100,7 @@ public class PointServiceTest {
 	void selectPointHistorySuccess(){
 		pointService.charge(1L, 1000);
 		pointService.charge(1L, 1000);
-		List<PointHistory> history = pointService.getPointHistory(1L);
+		PointHistoryListResponse history = pointService.getPointHistory(1L);
 		assertThat(history.size()).isEqualTo(2);
 	}
 

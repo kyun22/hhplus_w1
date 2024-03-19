@@ -71,16 +71,17 @@ class PointControllerTest {
 
 	@DisplayName("히스토리 조회 성공")
 	@Test
-	void testMethodName() throws Exception {
+	void selectHistorySuccess() throws Exception {
 		pointHistoryTable.insert(1L, 10000, TransactionType.CHARGE, System.currentTimeMillis());
 		pointHistoryTable.insert(1L, 20000, TransactionType.USE, System.currentTimeMillis());
 		pointHistoryTable.insert(1L, 30000, TransactionType.CHARGE, System.currentTimeMillis());
 
 		ResultActions resultActions = mockMvc.perform(get("/point/1/histories"));
 		resultActions.andExpect(status().isOk())
-		  .andExpect(jsonPath("$.length()").value(3))
-		  .andExpect(jsonPath("$[0].amount").value(10000))
-		  .andExpect(jsonPath("$[1].type").value(TransactionType.USE.name()));
+		  .andExpect(jsonPath("histories.length()").value(3))
+		  .andExpect(jsonPath("histories[0].amount").value(10000))
+		  .andExpect(jsonPath("histories[1].type").value(TransactionType.USE.name()));
 	}
+
 
 }

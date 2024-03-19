@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+import io.hhplus.tdd.dto.PointHistoryListResponse;
+import io.hhplus.tdd.dto.UserPointResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -18,18 +18,17 @@ public class PointController {
     private final PointService pointService;
 
     @GetMapping("{id}")
-    public UserPoint point(
+    public ResponseEntity<UserPointResponse> point(
             @PathVariable long id
     ) {
-        return pointService.getUserPoint(id);
+		return ResponseEntity.ok(pointService.getUserPoint(id));
     }
 
     @GetMapping("{id}/histories")
-    public ResponseEntity<List<PointHistory>> history(
+    public ResponseEntity<PointHistoryListResponse> history(
             @PathVariable long id
     ) {
-        List<PointHistory> history = pointService.getPointHistory(id);
-        return ResponseEntity.ok(history);
+		return ResponseEntity.ok(pointService.getPointHistory(id));
     }
 
     /**
