@@ -1,6 +1,7 @@
-package io.hhplus.tdd;
+package io.hhplus.tdd.point;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -10,9 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
-import io.hhplus.tdd.point.PointHistory;
-import io.hhplus.tdd.point.PointService;
-import io.hhplus.tdd.point.UserPoint;
 
 public class PointServiceTest {
 
@@ -56,4 +54,22 @@ public class PointServiceTest {
 		List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(1L);
 		assertThat(pointHistories.size()).isEqualTo(2);
 	}
+
+	@DisplayName("유저 포인트 사용 실패 - 포인트 잔고 부족 ")
+	@Test
+	void useUserPointFail(){
+		RuntimeException exception = assertThrows(RuntimeException.class, () -> pointService.use(1L, 1000));
+		assertThat(exception.getMessage()).isEqualTo("User point is not enough.");
+	}
+
+	@DisplayName("유저 포인트 사용 성공")
+	@Test
+	void useUserPointSuccess(){
+		pointService.charge(1L, 1000L);
+		pointService.use(1L, 100L);
+		UserPoint used = pointService.use(1L, 100L);
+
+		assertThat(used.point()).isEqualTo(800L);
+	}
+
 }

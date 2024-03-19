@@ -18,4 +18,13 @@ public class PointService {
 		pointHistoryTable.insert(id, amount, TransactionType.CHARGE, System.currentTimeMillis());
 		return userPointTable.insertOrUpdate(id, userPoint.point() + amount);
 	}
+
+	public UserPoint use(long id, long amount) {
+		UserPoint userPoint = userPointTable.selectById(id);
+		if(userPoint.point() < amount)
+			throw new RuntimeException("User point is not enough.");
+
+		pointHistoryTable.insert(id, amount, TransactionType.USE, System.currentTimeMillis());
+		return userPointTable.insertOrUpdate(id, userPoint.point() - amount);
+	}
 }
