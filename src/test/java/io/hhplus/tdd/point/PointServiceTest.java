@@ -58,8 +58,8 @@ public class PointServiceTest {
 	@DisplayName("유저 포인트 사용 실패 - 포인트 잔고 부족 ")
 	@Test
 	void useUserPointFail(){
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> pointService.use(1L, 1000));
-		assertThat(exception.getMessage()).isEqualTo("User point is not enough.");
+		PointException exception = assertThrows(PointException.class, () -> pointService.use(1L, 1000));
+		assertThat(exception.getErrorResult()).isEqualTo(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
 	}
 
 	@DisplayName("유저 포인트 사용 성공")

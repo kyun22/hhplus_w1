@@ -14,17 +14,30 @@ public class PointService {
 	private final PointHistoryTable pointHistoryTable;
 
 	public UserPoint charge(long id, long amount) {
-		UserPoint userPoint = userPointTable.selectById(id);
-		pointHistoryTable.insert(id, amount, TransactionType.CHARGE, System.currentTimeMillis());
-		return userPointTable.insertOrUpdate(id, userPoint.point() + amount);
+		UserPoint userPoint = getUserPoint(id);
+		insertPointHistory(id, amount, TransactionType.CHARGE);
+		return updateUserPoint(id, userPoint.point() + amount);
 	}
 
 	public UserPoint use(long id, long amount) {
-		UserPoint userPoint = userPointTable.selectById(id);
-		if(userPoint.point() < amount)
-			throw new RuntimeException("User point is not enough.");
+		UserPoint userPoint = getUserPoint(id);
 
-		pointHistoryTable.insert(id, amount, TransactionType.USE, System.currentTimeMillis());
-		return userPointTable.insertOrUpdate(id, userPoint.point() - amount);
+		if (userPoint.point() < amount)
+			throw new PointException(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
+
+		insertPointHistory(id, amount, TransactionType.USE);
+		return updateUserPoint(id, userPoint.point() - amount);
+	}
+
+	private UserPoint updateUserPoint(long id, long amount1) {
+		return userPointTable.insertOrUpdate(id, amount1);
+	}
+
+	private PointHistory insertPointHistory(long id, long amount, TransactionType use) {
+		return pointHistoryTable.insert(id, amount, use, System.currentTimeMillis());
+	}
+
+	private UserPoint getUserPoint(long id) {
+		return userPointTable.selectById(id);
 	}
 }
