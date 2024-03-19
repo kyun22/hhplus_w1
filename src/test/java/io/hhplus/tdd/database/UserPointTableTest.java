@@ -58,5 +58,4 @@ class UserPointTableTest {
 		assertThat(userPoint.id()).isEqualTo(0L);
 		assertThat(userPoint.point()).isEqualTo(1000L);
 	}
-
 }
