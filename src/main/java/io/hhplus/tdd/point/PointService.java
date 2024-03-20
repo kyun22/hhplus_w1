@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.dto.PointHistoryListResponse;
+import io.hhplus.tdd.dto.UserPointRequest;
 import io.hhplus.tdd.dto.UserPointResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -18,20 +19,31 @@ public class PointService {
 	private final UserPointTable userPointTable;
 	private final PointHistoryTable pointHistoryTable;
 
-	public UserPoint charge(long id, long amount) {
+	public UserPointResponse charge(long id, UserPointRequest.Charge request) {
 		UserPointResponse userPoint = getUserPoint(id);
-		insertPointHistory(id, amount, TransactionType.CHARGE);
-		return updateUserPoint(id, userPoint.getPoint() + amount);
+		insertPointHistory(id, request.getAmount(), TransactionType.CHARGE);
+		UserPoint result = updateUserPoint(id, userPoint.getPoint() + request.getAmount());
+
+		return UserPointResponse.builder()
+		  .id(result.id())
+		  .point(result.point())
+		  .updateMillis(result.updateMillis())
+		  .build();
 	}
 
-	public UserPoint use(long id, long amount) {
+	public UserPointResponse use(long id, UserPointRequest.Use request) {
 		UserPointResponse userPoint = getUserPoint(id);
 
-		if (userPoint.getPoint() < amount)
+		if (userPoint.getPoint() < request.getAmount())
 			throw new PointException(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
 
-		insertPointHistory(id, amount, TransactionType.USE);
-		return updateUserPoint(id, userPoint.getPoint() - amount);
+		insertPointHistory(id, request.getAmount(), TransactionType.USE);
+		UserPoint result = updateUserPoint(id, userPoint.getPoint() - request.getAmount());
+		return UserPointResponse.builder()
+		  .id(result.id())
+		  .point(result.point())
+		  .updateMillis(result.updateMillis())
+		  .build();
 	}
 
 	private UserPoint updateUserPoint(long id, long amount1) {

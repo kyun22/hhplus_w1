@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.dto.PointHistoryListResponse;
+import io.hhplus.tdd.dto.UserPointRequest;
 import io.hhplus.tdd.dto.UserPointResponse;
 
 public class PointServiceTest {
@@ -36,9 +37,9 @@ public class PointServiceTest {
 
 	@DisplayName("유저 포인트 충전 성공")
 	@Test
-	void chargeUserPointSuccess(){
-		pointService.charge(1L, 1000L);
-		pointService.charge(1L, 1000L);
+	void chargeUserPointSuccess() {
+		chargePoint(1L, 1000L);
+		chargePoint(1L, 1000L);
 
 		// then
 		UserPoint userPoint = userPointTable.selectById(1L);
@@ -47,10 +48,10 @@ public class PointServiceTest {
 
 	@DisplayName("유저 포인트 충전 시 히스토리도 저장 됨.")
 	@Test
-	void insertHistoryWhenChargeUserPoint(){
+	void insertHistoryWhenChargeUserPoint() {
 
-		pointService.charge(1L, 1000L);
-		pointService.charge(1L, 1000L);
+		chargePoint(1L, 1000L);
+		chargePoint(1L, 1000L);
 
 		// then
 		List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(1L);
@@ -59,27 +60,27 @@ public class PointServiceTest {
 
 	@DisplayName("유저 포인트 사용 실패 - 포인트 잔고 부족 ")
 	@Test
-	void useUserPointFail(){
-		PointException exception = assertThrows(PointException.class, () -> pointService.use(1L, 1000));
+	void useUserPointFail() {
+		PointException exception = assertThrows(PointException.class, () -> usePoint(1L, 1000));
 		assertThat(exception.getErrorResult()).isEqualTo(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
 	}
 
 	@DisplayName("유저 포인트 사용 성공")
 	@Test
-	void useUserPointSuccess(){
-		pointService.charge(1L, 1000L);
-		pointService.use(1L, 100L);
-		UserPoint used = pointService.use(1L, 100L);
+	void useUserPointSuccess() {
+		chargePoint(1L, 1000L);
+		usePoint(1L, 100L);
+		UserPointResponse used = usePoint(1L, 100L);
 
-		assertThat(used.point()).isEqualTo(800L);
+		assertThat(used.getPoint()).isEqualTo(800L);
 	}
 
 	@DisplayName("유저 포인트 충전 시 히스토리도 저장 됨.")
 	@Test
-	void insertHistoryWhenUseUserPoint(){
+	void insertHistoryWhenUseUserPoint() {
 		userPointTable.insertOrUpdate(1L, 10000L);
-		pointService.use(1L, 1000L);
-		pointService.use(1L, 1000L);
+		usePoint(1L, 1000L);
+		usePoint(1L, 1000L);
 
 		// then
 		List<PointHistory> pointHistories = pointHistoryTable.selectAllByUserId(1L);
@@ -88,7 +89,7 @@ public class PointServiceTest {
 
 	@DisplayName("포인트 조회 성공")
 	@Test
-	void selectUserPointSuccess(){
+	void selectUserPointSuccess() {
 		UserPointResponse response = pointService.getUserPoint(1L);
 
 		assertThat(response.getId()).isEqualTo(1L);
@@ -97,13 +98,18 @@ public class PointServiceTest {
 
 	@DisplayName("포인트 히스토리 조회 성공")
 	@Test
-	void selectPointHistorySuccess(){
-		pointService.charge(1L, 1000);
-		pointService.charge(1L, 1000);
+	void selectPointHistorySuccess() {
+		chargePoint(1L, 1000);
+		chargePoint(1L, 1000);
 		PointHistoryListResponse history = pointService.getPointHistory(1L);
 		assertThat(history.size()).isEqualTo(2);
 	}
 
+	private UserPointResponse chargePoint(long id, long amount) {
+		return pointService.charge(id, new UserPointRequest.Charge(amount));
+	}
 
-
+	private UserPointResponse usePoint(long id, long amount) {
+		return pointService.use(id, new UserPointRequest.Use(amount));
+	}
 }

@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.hhplus.tdd.dto.PointHistoryListResponse;
+import io.hhplus.tdd.dto.UserPointRequest;
 import io.hhplus.tdd.dto.UserPointResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -21,6 +23,7 @@ public class PointController {
     public ResponseEntity<UserPointResponse> point(
             @PathVariable long id
     ) {
+        log.info("select userPoint called. user id : {}", id);
 		return ResponseEntity.ok(pointService.getUserPoint(id));
     }
 
@@ -28,28 +31,25 @@ public class PointController {
     public ResponseEntity<PointHistoryListResponse> history(
             @PathVariable long id
     ) {
+        log.info("select pointHistory called. user id : {}", id);
 		return ResponseEntity.ok(pointService.getPointHistory(id));
     }
 
-    /**
-     * TODO - 특정 유저의 포인트를 충전하는 기능을 작성해주세요.
-     */
     @PatchMapping("{id}/charge")
-    public UserPoint charge(
+    public ResponseEntity<UserPointResponse> charge(
             @PathVariable long id,
-            @RequestBody long amount
+            @RequestBody @Valid UserPointRequest.Charge amount
     ) {
-        return new UserPoint(0, 0, 0);
+        log.info("charge userPoint. userId : {}, amount : {}", id, amount.getAmount());
+		return ResponseEntity.ok(pointService.charge(id, amount));
     }
 
-    /**
-     * TODO - 특정 유저의 포인트를 사용하는 기능을 작성해주세요.
-     */
     @PatchMapping("{id}/use")
-    public UserPoint use(
+    public ResponseEntity<UserPointResponse> use(
             @PathVariable long id,
-            @RequestBody long amount
+            @RequestBody @Valid UserPointRequest.Use amount
     ) {
-        return new UserPoint(0, 0, 0);
+        log.info("use userPoint. userId : {}, amount : {}", id, amount.getAmount());
+        return ResponseEntity.ok(pointService.use(id, amount));
     }
 }
