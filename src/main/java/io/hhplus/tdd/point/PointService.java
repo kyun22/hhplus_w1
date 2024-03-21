@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import io.hhplus.tdd.database.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.dto.PointHistoryListResponse;
@@ -18,11 +19,18 @@ public class PointService {
 
 	private final UserPointTable userPointTable;
 	private final PointHistoryTable pointHistoryTable;
+	private final LockByKey lockByKey;
 
 	public UserPointResponse charge(long id, UserPointRequest.Charge request) {
-		UserPointResponse userPoint = getUserPoint(id);
-		insertPointHistory(id, request.getAmount(), TransactionType.CHARGE);
-		UserPoint result = updateUserPoint(id, userPoint.getPoint() + request.getAmount());
+		UserPoint result;
+		try {
+			lockByKey.lock(id);
+			UserPointResponse userPoint = getUserPoint(id);
+			result = updateUserPoint(id, userPoint.getPoint() + request.getAmount());
+			insertPointHistory(id, request.getAmount(), TransactionType.CHARGE);
+		} finally {
+			lockByKey.unlock(id);
+		}
 
 		return UserPointResponse.builder()
 		  .id(result.id())
@@ -32,13 +40,20 @@ public class PointService {
 	}
 
 	public UserPointResponse use(long id, UserPointRequest.Use request) {
-		UserPointResponse userPoint = getUserPoint(id);
+		UserPoint result;
+		try {
+			lockByKey.lock(id);
+			UserPointResponse userPoint = getUserPoint(id);
 
-		if (userPoint.getPoint() < request.getAmount())
-			throw new PointException(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
+			if (userPoint.getPoint() < request.getAmount())
+				throw new PointException(PointErrorResult.USER_POINT_IS_NOT_ENOUGH);
 
-		insertPointHistory(id, request.getAmount(), TransactionType.USE);
-		UserPoint result = updateUserPoint(id, userPoint.getPoint() - request.getAmount());
+			result = updateUserPoint(id, userPoint.getPoint() - request.getAmount());
+			insertPointHistory(id, request.getAmount(), TransactionType.USE);
+		} finally {
+			lockByKey.unlock(id);
+		}
+
 		return UserPointResponse.builder()
 		  .id(result.id())
 		  .point(result.point())
@@ -67,7 +82,7 @@ public class PointService {
 	public PointHistoryListResponse getPointHistory(long id) {
 
 		List<PointHistory> histories = pointHistoryTable.selectAllByUserId(id);
-		if(histories.isEmpty())
+		if (histories.isEmpty())
 			throw new PointException(PointErrorResult.USER_NOT_FOUND);
 
 		List<PointHistoryListResponse.PointHistoryResponse> list = histories.stream()

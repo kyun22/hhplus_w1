@@ -7,4 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PointException extends RuntimeException{
 	private final PointErrorResult errorResult;
+
+	@Override
+	public String getMessage() {
+		return errorResult.getMessage();
+	}
 }
