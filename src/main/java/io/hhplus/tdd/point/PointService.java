@@ -14,7 +14,6 @@ import io.hhplus.tdd.enums.PointErrorResult;
 import io.hhplus.tdd.enums.TransactionType;
 import io.hhplus.tdd.exception.PointException;
 import io.hhplus.tdd.repository.PointHistoryRepository;
-import io.hhplus.tdd.repository.PointHistoryRepositoryImpl;
 import io.hhplus.tdd.repository.UserPointRepository;
 import io.hhplus.tdd.utils.LockByKey;
 import lombok.RequiredArgsConstructor;

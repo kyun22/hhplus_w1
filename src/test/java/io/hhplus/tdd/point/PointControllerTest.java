@@ -17,6 +17,7 @@ import io.hhplus.tdd.advice.ApiControllerAdvice;
 import io.hhplus.tdd.repository.PointHistoryRepository;
 import io.hhplus.tdd.repository.PointHistoryRepositoryImpl;
 import io.hhplus.tdd.repository.UserPointRepository;
+import io.hhplus.tdd.repository.UserPointRepositoryImpl;
 import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
@@ -35,7 +36,7 @@ class PointControllerTest {
 	void setUp() {
 		LockByKey lockByKey = new LockByKey();
 		userPointTable = new UserPointTable();
-		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
+		UserPointRepository userPointRepository = new UserPointRepositoryImpl(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
 		PointHistoryRepository pointHistoryRepository = new PointHistoryRepositoryImpl(pointHistoryTable);
 		PointService pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);

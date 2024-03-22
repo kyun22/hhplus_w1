@@ -21,6 +21,7 @@ import io.hhplus.tdd.exception.PointException;
 import io.hhplus.tdd.repository.PointHistoryRepository;
 import io.hhplus.tdd.repository.PointHistoryRepositoryImpl;
 import io.hhplus.tdd.repository.UserPointRepository;
+import io.hhplus.tdd.repository.UserPointRepositoryImpl;
 import io.hhplus.tdd.utils.LockByKey;
 
 public class PointServiceTest {
@@ -34,7 +35,7 @@ public class PointServiceTest {
 	void setUp() {
 		lockByKey = new LockByKey();
 		userPointTable = new UserPointTable();
-		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
+		UserPointRepository userPointRepository = new UserPointRepositoryImpl(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
 		PointHistoryRepository pointHistoryRepository = new PointHistoryRepositoryImpl(pointHistoryTable);
 		pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);

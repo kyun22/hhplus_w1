@@ -18,7 +18,7 @@ class UserPointRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		userPointTable = new UserPointTable();
-		userPointRepository = new UserPointRepository(userPointTable);
+		userPointRepository = new UserPointRepositoryImpl(userPointTable);
 	}
 
 	@DisplayName("유저 포인트 저장 성공")
