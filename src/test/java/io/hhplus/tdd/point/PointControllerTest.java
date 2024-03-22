@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.hhplus.tdd.advice.ApiControllerAdvice;
 import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.PointHistoryRepositoryImpl;
 import io.hhplus.tdd.repository.UserPointRepository;
 import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
@@ -36,7 +37,7 @@ class PointControllerTest {
 		userPointTable = new UserPointTable();
 		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
-		PointHistoryRepository pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		PointHistoryRepository pointHistoryRepository = new PointHistoryRepositoryImpl(pointHistoryTable);
 		PointService pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);
 		PointController pointController = new PointController(pointService);
 		ApiControllerAdvice apiControllerAdvice = new ApiControllerAdvice();

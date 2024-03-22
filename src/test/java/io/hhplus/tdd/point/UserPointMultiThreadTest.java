@@ -10,7 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -23,14 +22,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.hhplus.tdd.advice.ApiControllerAdvice;
-import io.hhplus.tdd.repository.PointHistoryRepository;
-import io.hhplus.tdd.repository.UserPointRepository;
-import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.dto.UserPointRequest;
 import io.hhplus.tdd.enums.TransactionType;
 import io.hhplus.tdd.exception.PointException;
+import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.PointHistoryRepositoryImpl;
+import io.hhplus.tdd.repository.UserPointRepository;
+import io.hhplus.tdd.utils.LockByKey;
 
 public class UserPointMultiThreadTest {
 	private static final Logger log = LoggerFactory.getLogger(PointController.class);
@@ -52,7 +52,7 @@ public class UserPointMultiThreadTest {
 		userPointTable = new UserPointTable();
 		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
-		PointHistoryRepository pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		PointHistoryRepository pointHistoryRepository = new PointHistoryRepositoryImpl(pointHistoryTable);
 		pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);
 		executorService = Executors.newFixedThreadPool(N_THREADS);
 		latch = new CountDownLatch(MAX_EXECUTE_COUNT);

@@ -19,7 +19,7 @@ public class PointHistoryRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		PointHistoryTable pointHistoryTable = new PointHistoryTable();
-		pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		pointHistoryRepository = new PointHistoryRepositoryImpl(pointHistoryTable);
 	}
 
 	@DisplayName("포인트히스토리 insert 성공")
