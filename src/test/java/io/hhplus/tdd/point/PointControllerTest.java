@@ -13,11 +13,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.hhplus.tdd.ApiControllerAdvice;
-import io.hhplus.tdd.database.LockByKey;
+import io.hhplus.tdd.advice.ApiControllerAdvice;
+import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.domain.PointHistory;
+import io.hhplus.tdd.domain.UserPoint;
 import io.hhplus.tdd.dto.UserPointRequest;
+import io.hhplus.tdd.enums.TransactionType;
 
 class PointControllerTest {
 	MockMvc mockMvc;

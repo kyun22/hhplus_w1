@@ -9,12 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.hhplus.tdd.database.LockByKey;
+import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.domain.PointHistory;
+import io.hhplus.tdd.domain.UserPoint;
 import io.hhplus.tdd.dto.PointHistoryListResponse;
 import io.hhplus.tdd.dto.UserPointRequest;
 import io.hhplus.tdd.dto.UserPointResponse;
+import io.hhplus.tdd.enums.PointErrorResult;
+import io.hhplus.tdd.exception.PointException;
 
 public class PointServiceTest {
 

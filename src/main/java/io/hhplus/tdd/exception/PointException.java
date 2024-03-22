@@ -1,5 +1,6 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.exception;
 
+import io.hhplus.tdd.enums.PointErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

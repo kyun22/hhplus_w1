@@ -3,7 +3,7 @@ package io.hhplus.tdd.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.hhplus.tdd.point.TransactionType;
+import io.hhplus.tdd.enums.TransactionType;
 import lombok.Builder;
 import lombok.Getter;
 
