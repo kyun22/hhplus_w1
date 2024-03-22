@@ -5,9 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import io.hhplus.tdd.utils.LockByKey;
-import io.hhplus.tdd.database.PointHistoryTable;
-import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.domain.PointHistory;
 import io.hhplus.tdd.domain.UserPoint;
 import io.hhplus.tdd.dto.PointHistoryListResponse;
@@ -16,14 +13,17 @@ import io.hhplus.tdd.dto.UserPointResponse;
 import io.hhplus.tdd.enums.PointErrorResult;
 import io.hhplus.tdd.enums.TransactionType;
 import io.hhplus.tdd.exception.PointException;
+import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.UserPointRepository;
+import io.hhplus.tdd.utils.LockByKey;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class PointService {
 
-	private final UserPointTable userPointTable;
-	private final PointHistoryTable pointHistoryTable;
+	private final UserPointRepository userPointRepository;
+	private final PointHistoryRepository pointHistoryRepository;
 	private final LockByKey lockByKey;
 
 	public UserPointResponse charge(long id, UserPointRequest.Charge request) {
@@ -66,16 +66,16 @@ public class PointService {
 		  .build();
 	}
 
-	private UserPoint updateUserPoint(long id, long amount1) {
-		return userPointTable.insertOrUpdate(id, amount1);
+	private UserPoint updateUserPoint(long id, long point) {
+		return userPointRepository.merge(id, point);
 	}
 
-	private PointHistory insertPointHistory(long id, long amount, TransactionType use) {
-		return pointHistoryTable.insert(id, amount, use, System.currentTimeMillis());
+	private PointHistory insertPointHistory(long userId, long amount, TransactionType type) {
+		return pointHistoryRepository.save(userId, amount, type);
 	}
 
 	public UserPointResponse getUserPoint(long id) {
-		UserPoint userPoint = userPointTable.selectById(id);
+		UserPoint userPoint = userPointRepository.findById(id);
 
 		return UserPointResponse.builder()
 		  .id(userPoint.id())
@@ -86,7 +86,7 @@ public class PointService {
 
 	public PointHistoryListResponse getPointHistory(long id) {
 
-		List<PointHistory> histories = pointHistoryTable.selectAllByUserId(id);
+		List<PointHistory> histories = pointHistoryRepository.findAllByUserId(id);
 		if (histories.isEmpty())
 			throw new PointException(PointErrorResult.USER_NOT_FOUND);
 

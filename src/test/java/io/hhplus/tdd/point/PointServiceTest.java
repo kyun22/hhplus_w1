@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.UserPointRepository;
 import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
@@ -31,8 +33,10 @@ public class PointServiceTest {
 	void setUp() {
 		lockByKey = new LockByKey();
 		userPointTable = new UserPointTable();
+		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
-		pointService = new PointService(userPointTable, pointHistoryTable, lockByKey);
+		PointHistoryRepository pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);
 	}
 
 	/**

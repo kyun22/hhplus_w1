@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.domain.PointHistory;
+import io.hhplus.tdd.enums.TransactionType;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -17,8 +18,7 @@ public class PointHistoryRepository {
 		return pointHistoryTable.selectAllByUserId(id);
 	}
 
-	public PointHistory save(PointHistory pointHistory) {
-		return pointHistoryTable.insert(pointHistory.userId(), pointHistory.amount(), pointHistory.type(),
-		  pointHistory.updateMillis());
+	public PointHistory save(long userId, long amount, TransactionType type) {
+		return pointHistoryTable.insert(userId, amount, type, System.currentTimeMillis());
 	}
 }

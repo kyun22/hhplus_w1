@@ -48,8 +48,7 @@ public class PointHistoryRepositoryTest {
 	}
 
 	private PointHistory saveOneHistory() {
-		return pointHistoryRepository.save(
-		  new PointHistory(1L, 1L, 1000, TransactionType.CHARGE, System.currentTimeMillis()));
+		return pointHistoryRepository.save(1L, 1000, TransactionType.CHARGE);
 	}
 
 }

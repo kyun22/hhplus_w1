@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.hhplus.tdd.advice.ApiControllerAdvice;
+import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.UserPointRepository;
 import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
@@ -32,8 +34,10 @@ class PointControllerTest {
 	void setUp() {
 		LockByKey lockByKey = new LockByKey();
 		userPointTable = new UserPointTable();
+		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
-		PointService pointService = new PointService(userPointTable, pointHistoryTable, lockByKey);
+		PointHistoryRepository pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		PointService pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);
 		PointController pointController = new PointController(pointService);
 		ApiControllerAdvice apiControllerAdvice = new ApiControllerAdvice();
 		mockMvc = MockMvcBuilders.standaloneSetup(pointController)

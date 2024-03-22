@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class PointRepository {
+public class UserPointRepository {
 
 	private final UserPointTable userPointTable;
 
-	public UserPoint merge(UserPoint userPoint) {
-		return userPointTable.insertOrUpdate(userPoint.id(), userPoint.point());
+	public UserPoint merge(long id, long point) {
+		return userPointTable.insertOrUpdate(id, point);
 	}
 
 	public UserPoint findById(long id) {

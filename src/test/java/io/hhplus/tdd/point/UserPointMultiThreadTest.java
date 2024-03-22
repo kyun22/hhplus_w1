@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.hhplus.tdd.advice.ApiControllerAdvice;
+import io.hhplus.tdd.repository.PointHistoryRepository;
+import io.hhplus.tdd.repository.UserPointRepository;
 import io.hhplus.tdd.utils.LockByKey;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
@@ -46,10 +48,12 @@ public class UserPointMultiThreadTest {
 
 	@BeforeEach
 	void setUp() {
-		userPointTable = new UserPointTable();
 		lockByKey = new LockByKey();
+		userPointTable = new UserPointTable();
+		UserPointRepository userPointRepository = new UserPointRepository(userPointTable);
 		pointHistoryTable = new PointHistoryTable();
-		pointService = new PointService(userPointTable, pointHistoryTable, lockByKey);
+		PointHistoryRepository pointHistoryRepository = new PointHistoryRepository(pointHistoryTable);
+		pointService = new PointService(userPointRepository, pointHistoryRepository, lockByKey);
 		executorService = Executors.newFixedThreadPool(N_THREADS);
 		latch = new CountDownLatch(MAX_EXECUTE_COUNT);
 		PointController pointController = new PointController(pointService);
@@ -128,7 +132,6 @@ public class UserPointMultiThreadTest {
 
 	@DisplayName("PointService 멀티 스레드 테스트 - 잔액이 부족한 경우 실행되지 않음")
 	@Test
-	@Disabled
 	void testMultiChargeAndUse2() throws InterruptedException {
 		AtomicInteger failCount = new AtomicInteger(0);
 
